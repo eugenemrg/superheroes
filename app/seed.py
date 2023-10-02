@@ -43,7 +43,7 @@ with app.app_context():
     
     hero_powers = []
     for hero in heroes:
-        hp = HeroPower(hero = hero, power = rc(powers), strength = randint(1,10))
+        hp = HeroPower(hero = hero, power = rc(powers), strength = rc(['Strong', 'Weak', 'Average']))
         hero_powers.append(hp)
     db.session.add_all(hero_powers)
     db.session.commit()
