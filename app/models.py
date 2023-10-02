@@ -14,6 +14,9 @@ class HeroPower(db.Model):
     
     hero = db.relationship('Hero', back_populates='powers')
     power = db.relationship('Power', back_populates='heroes')
+    
+    def __repr__(self):
+        return f'<HeroPower id:{self.id}, Linking {self.hero}, {self.power}>'
 
 class Hero(db.Model):
     __tablename__ = 'heroes'
@@ -26,6 +29,9 @@ class Hero(db.Model):
     
     powers = db.relationship('HeroPower', back_populates='hero')
     
+    def __repr__(self):
+        return f'<Hero, name: {self.name}, super-name: {self.super_name}>'
+    
 class Power(db.Model):
     __tablename__ = 'powers'
 
@@ -36,3 +42,6 @@ class Power(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     
     heroes = db.relationship('HeroPower', back_populates='power')
+    
+    def __repr__(self):
+        return f'<Power, name: {self.name}>, description: {self.description}'
