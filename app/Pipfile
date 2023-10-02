@@ -8,6 +8,9 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 faker = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask-restful = "*"
 
 [dev-packages]
 
