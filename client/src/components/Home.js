@@ -5,7 +5,7 @@ function Home() {
   const [heros, setHeros] = useState([]);
 
   useEffect(() => {
-    fetch("/heroes")
+    fetch("https://superheroes-flask-api-dw8u.onrender.com/heroes")
       .then((r) => r.json())
       .then(setHeros);
   }, []);

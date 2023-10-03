@@ -11,13 +11,13 @@ function HeroPowerForm() {
   const history = useHistory();
 
   useEffect(() => {
-    fetch("/heroes")
+    fetch("https://superheroes-flask-api-dw8u.onrender.com/heroes")
       .then((r) => r.json())
       .then(setHeroes);
   }, []);
 
   useEffect(() => {
-    fetch("/powers")
+    fetch("https://superheroes-flask-api-dw8u.onrender.com/powers")
       .then((r) => r.json())
       .then(setPowers);
   }, []);
@@ -29,7 +29,7 @@ function HeroPowerForm() {
       power_id: powerId,
       strength,
     };
-    fetch("/hero_powers", {
+    fetch("https://superheroes-flask-api-dw8u.onrender.com/hero_powers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

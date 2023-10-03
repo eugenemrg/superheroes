@@ -12,7 +12,7 @@ function PowerEditForm() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/powers/${id}`).then((r) => {
+    fetch(`https://superheroes-flask-api-dw8u.onrender.com/powers/${id}`).then((r) => {
       if (r.ok) {
         r.json().then((power) => {
           setPower({ data: power, errors: [], status: "resolved" });
@@ -30,7 +30,7 @@ function PowerEditForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(`/powers/${power.id}`, {
+    fetch(`https://superheroes-flask-api-dw8u.onrender.com/powers/${power.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
