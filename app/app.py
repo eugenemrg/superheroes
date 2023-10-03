@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, request, make_response
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
@@ -41,15 +41,13 @@ class HeroSchema(ma.SQLAlchemyAutoSchema):
 hero_schema = HeroSchema()
 heroes_schema = HeroSchema(many=True)
 
-@app.route('/')
-def home():
-    all_heroes = heroes_schema.dump(Hero.query.all())
-    all_heroes["powers"] = powers_schema.dump(Hero.query.filter_by(id=1).all())
-    return make_response(
-        json.dumps(all_heroes),
-        200
-    )
-    # return ''
+class Index(Resource):
+    def get(self):
+        return make_response(
+            jsonify({"api":"Superheroes Flask API"})
+        )
+        
+api.add_resource(Index, '/')
 
 class Heroes(Resource):
     def get(self):
@@ -100,8 +98,60 @@ class PowerById(Resource):
             jsonify(response),
             200
         )
+    
+    def patch(self, id):
+        power = Power.query.filter_by(id=id).first()
+        
+        if not power:
+            return make_response({"error": "Power not found"}, 200)
+
+        for attr in request.form:
+            setattr(power, attr, request.form.get(attr))
+
+        db.session.add(power)
+        db.session.commit()
+
+        response = make_response(
+            jsonify(power_schema.dump(power)),
+            200
+        )
+
+        return response
 
 api.add_resource(PowerById, '/powers/<int:id>')
+
+class HeroPowers(Resource):
+    
+    def post(self):
+        new_hp = HeroPower(
+            hero_id = request.form.get("hero_id"), 
+            power_id = request.form.get("power_id"), 
+            strength = request.form.get("strength")
+            )
+        
+        if not new_hp:
+            return make_response(
+                jsonify({ "errors": ["validation errors"] }),
+                200
+            )
+        
+        db.session.add(new_hp)
+        db.session.commit()
+        
+        hero = Hero.query.filter_by(id=request.form.get("hero_id")).first()
+        
+        if not hero:
+            return make_response( jsonify({"error": "Hero not found"}), 200 )
+            
+        response = hero_schema.dump(hero)
+        response["powers"] = [power_schema.dump(p.power) for p in hero.powers]
+        
+        return make_response(
+            jsonify(response),
+            200
+        )
+    
+api.add_resource(HeroPowers, '/hero_powers')
 
 
 if __name__ == '__main__':
